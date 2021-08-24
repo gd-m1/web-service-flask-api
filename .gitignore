@@ -6,3 +6,4 @@ venv
 *.db
 settings.py
 setup.cfg
+docs

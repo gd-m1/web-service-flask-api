@@ -12,7 +12,46 @@ args_schema = ArgsSchema()
 
 class ApiUsers(Resource):
     def get(self):
+        """
+        @api {get} /api/users Request User information
+        @apiName GetUser
+        @apiGroup User
 
+        @apiParam {String} offset skips number of rows.
+        @apiParam {String} limit allows to retrieve just a portion of rows.
+        @apiParam {String} order_by constrains the result into a unique order (name, last_name, email).
+        @apiParam {Number} id filters by id.
+        @apiParam {String} email filters by email.
+        @apiParam {String} name_substr filters by name substring.
+
+        @apiSuccess {Objects[]} items array of data belonging to user (paginated).
+        @apiSuccess {Objects[]} total_count array of data belonging to user (filtered)
+
+        @apiSuccessExample Successful Response:
+        HTTP/1.1 200 OK
+        {
+            "items": [
+                {
+                    "email": "johndoe@demo.com",
+                    "id": 15,
+                    "last_name": "Doe",
+                    "name": "John",
+                    "role": "author",
+                    "state": "active"
+                }
+            ],
+            "total_count": [
+                {
+                    "email": "johndoe@demo.com",
+                    "id": 15,
+                    "last_name": "Doe",
+                    "name": "John",
+                    "role": "author",
+                    "state": "active"
+                }
+            ]
+        }
+        """
         # Validate parameters
         errors = args_schema.validate(request.args)
         if errors:
@@ -50,7 +89,34 @@ class ApiUsers(Resource):
                         'items': user_schema.dump(items, many=True)})
 
     def post(self):
+        """
+        @api {Post} /api/users Create a new User
+        @apiName AddUser
+        @apiGroup User
 
+        @apiParam {String} name user name.
+        @apiParam {String} last_name user last name.
+        @apiParam {String} email user email.
+        @apiParam {String} role (author or editor).
+        @apiParam {String} state (active, inactive, deleted).
+
+        @apiSuccess {String} message New user has been added.
+        @apiSuccess {Objects[]} user array of new user data.
+
+        @apiSuccessExample Successful Response:
+        HTTP/1.1 200 OK
+        {
+            "message": "New user has been successfully added!",
+            "user": {
+                "email": "johndoe@demo.com",
+                "id": 33,
+                "last_name": "Doe",
+                "name": "John",
+                "role": "author",
+                "state": "active"
+            }
+        }
+        """
         # Validate incoming data
         try:
             new_user = user_schema.load(request.json)
@@ -76,7 +142,40 @@ class ApiUsers(Resource):
 
 class ApiPosts(Resource):
     def get(self):
+        """
+        @api {get} /api/posts Request Post information
+        @apiName GetPost
+        @apiGroup Post
 
+        @apiParam {String} offset skips number of rows.
+        @apiParam {String} limit allows to retrieve just a portion of rows.
+        @apiParam {String} order_by constrains the result into a unique order (name, last_name, email).
+        @apiParam {Number} author filters by author.
+
+        @apiSuccess {Objects[]} items array of data belonging to user (paginated).
+        @apiSuccess {Objects[]} total_count array of data belonging to user (filtered)
+
+        @apiSuccessExample Successful Response:
+        HTTP/1.1 200 OK
+        {
+            "items": [
+                {
+                    "author": 9,
+                    "description": "Finally got my first shot of Moderna",
+                    "id": 10,
+                    "title": "Moderna"
+                }
+            ],
+            "total_count": [
+                {
+                    "author": 9,
+                    "description": "Finally got my first shot of Moderna",
+                    "id": 10,
+                    "title": "Moderna"
+                }
+            ]
+        }
+        """
         # Validate parameters
         errors = args_schema.validate(request.args)
         if errors:
@@ -113,7 +212,30 @@ class ApiPosts(Resource):
                         'items': post_schema.dump(items_post, many=True)})
 
     def post(self):
+        """
+        @api {Post} /api/posts Create a new Post
+        @apiName AddPost
+        @apiGroup Post
 
+        @apiParam {String} title post title.
+        @apiParam {String} description post.
+        @apiParam {Number} author user id.
+
+        @apiSuccess {String} message New post has been added.
+        @apiSuccess {Objects[]} post array of new post data.
+
+        @apiSuccessExample Successful Response:
+        HTTP/1.1 200 OK
+        {
+            "message": "New post has been added",
+            "post": {
+                "author": 3,
+                "description": "My first post",
+                "id": 30,
+                "title": "Test"
+            }
+        }
+        """
         # Validate incoming data
         try:
             new_post = post_schema.load(request.json)
